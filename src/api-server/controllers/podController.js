@@ -1,7 +1,9 @@
 const { set, get, del } = require("../../raft-store/raft-store");
+const Pod = require("../models/pod");
 
 async function createPod(req, res) {
-  const pod = req.body;
+  const { name, image, cpu, memory, service } = req.body;
+  const pod = new Pod(name, image, cpu, memory, service);
   await set(`pod:${pod.name}`, pod);
   res.status(201).json({ message: `Pod ${pod.name} created`, pod });
 }
