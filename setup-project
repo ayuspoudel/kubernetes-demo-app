@@ -1,0 +1,61 @@
+#! /usr/bin/env bash
+
+
+set -e
+
+PROJECT_ROOT="."
+
+create_dirs() {
+    mkdir -p $PROJECT_ROOT/src/api-server/routes
+    mkdir -p $PROJECT_ROOT/src/api-server/models
+    mkdir -p $PROJECT_ROOT/src/api-server/controllers
+    mkdir -p $PROJECT_ROOT/src/scheduler
+    mkdir -p $PROJECT_ROOT/src/controller-manager
+    mkdir -p $PROJECT_ROOT/src/networking
+    mkdir -p $PROJECT_ROOT/src/raft-store
+    mkdir -p $PROJECT_ROOT/src/worker
+    mkdir -p $PROJECT_ROOT/config
+    mkdir -p $PROJECT_ROOT/tests
+    mkdir -p $PROJECT_ROOT/logs
+}
+
+create_files() {
+    touch $PROJECT_ROOT/src/api-server/api-server.js
+    touch $PROJECT_ROOT/src/api-server/routes/pods.js
+    touch $PROJECT_ROOT/src/api-server/routes/nodes.js
+    touch $PROJECT_ROOT/src/api-server/routes/services.js
+    touch $PROJECT_ROOT/src/api-server/models/pod.js
+    touch $PROJECT_ROOT/src/api-server/models/node.js
+    touch $PROJECT_ROOT/src/api-server/models/service.js
+    touch $PROJECT_ROOT/src/api-server/controllers/podController.js
+    touch $PROJECT_ROOT/src/api-server/controllers/nodeController.js
+    touch $PROJECT_ROOT/src/api-server/controllers/serviceController.js
+    touch $PROJECT_ROOT/src/api-server/server.js
+
+    touch $PROJECT_ROOT/src/scheduler/scheduler.js
+    touch $PROJECT_ROOT/src/scheduler/algorithms.js
+
+    touch $PROJECT_ROOT/src/controller-manager/controller-manager.js
+
+    touch $PROJECT_ROOT/src/networking/ip-assigner.js
+    touch $PROJECT_ROOT/src/networking/dns-service.js
+
+    touch $PROJECT_ROOT/src/raft-store/raft-store.js
+
+    touch $PROJECT_ROOT/src/worker/worker.js
+
+    touch $PROJECT_ROOT/config/settings.js
+
+    touch $PROJECT_ROOT/tests/test-api-server.js
+    touch $PROJECT_ROOT/tests/test-scheduler.js
+
+    touch $PROJECT_ROOT/logs/api-server.log
+    touch $PROJECT_ROOT/logs/scheduler.log
+
+    touch $PROJECT_ROOT/docker-compose.yml
+    touch $PROJECT_ROOT/package.json
+    touch $PROJECT_ROOT/README.md
+}
+
+create_dirs
+create_files
