@@ -1,26 +1,43 @@
 const { get, set } = require("../raft-store/raft-store");
+const algorithms = require("./algorithms");
+
+const SCHEDULING_ALGORITHM = "binPacking"; // Change to "firstFit", "bestFit", etc.
 
 async function schedulePods() {
+  console.log("Running scheduler");
+
   let pods = (await get("pods")) || [];
   let nodes = (await get("nodes")) || [];
 
-  pods.sort((a, b) => b.cpu - a.cpu); // Sort pods by CPU usage (decreasing)
+  if (nodes.length === 0) {
+    console.log("No nodes available for scheduling");
+    return;
+  }
+
+  if (pods.length === 0) {
+    console.log("No pending pods to schedule");
+    return;
+  }
+
+  if (algorithms[SCHEDULING_ALGORITHM]) {
+    algorithms[SCHEDULING_ALGORITHM](pods, nodes);
+  } else {
+    console.log(`Invalid scheduling algorithm: ${SCHEDULING_ALGORITHM}`);
+    return;
+  }
 
   for (let pod of pods) {
-    if (!pod.node) {
-      let bestNode = nodes
-        .filter((n) => n.cpuAvailable >= pod.cpu)
-        .sort((a, b) => b.cpuAvailable - a.cpuAvailable)[0];
-
-      if (bestNode) {
-        console.log(`Assigning pod ${pod.name} to node ${bestNode.id}`);
-        pod.node = bestNode.id;
-        bestNode.cpuAvailable -= pod.cpu;
-        await set(`pod:${pod.name}`, pod);
-        await set(`node:${bestNode.id}`, bestNode);
-      }
+    if (pod.node) {
+      await set(`pod:${pod.name}`, pod);
+      console.log(`Scheduled pod ${pod.name} to node ${pod.node}`);
     }
+  }
+
+  for (let node of nodes) {
+    await set(`node:${node.id}`, node);
   }
 }
 
 setInterval(schedulePods, 5000);
+
+console.log("Scheduler started");
